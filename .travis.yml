@@ -1,0 +1,20 @@
+language: go
+
+
+go:
+  - 1.9.x
+  - tip
+
+before_script:
+  - go get -t -v github.com/smallnest/gomemcached
+  - go get github.com/mattn/goveralls
+
+script:
+ - go build .
+ - goveralls -service=travis-ci
+
+notifications:
+  email:
+    recipients: smallnest@gmail.com
+    on_success: change
+    on_failure: always

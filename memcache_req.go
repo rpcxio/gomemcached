@@ -23,9 +23,9 @@ type Request struct {
 	Key     string
 	Keys    []string
 	Flags   string
-	Exptime int64 //in second
+	Exptime int64 // in second
 	Data    []byte
-	Value   int64
+	Value   uint64
 	Cas     string
 	Noreply bool
 }
@@ -74,11 +74,12 @@ func ReadRequest(r *bufio.Reader) (req *Request, err error) {
 		if err != nil {
 			return nil, NewError("cannot read exptime " + err.Error())
 		}
-		if req.Exptime > 0 {
-			if req.Exptime <= RealtimeMaxDelta {
-				req.Exptime = time.Now().Unix()/1e9 + req.Exptime
-			}
-		}
+		// if req.Exptime > 0 {
+		// 	if req.Exptime <= RealtimeMaxDelta { // <= 30 days
+		// 		req.Exptime = time.Now().Unix() + req.Exptime
+		// 	}
+		// }
+
 		bytes, err := strconv.Atoi(arr[4])
 		if err != nil {
 			return nil, NewError("cannot read bytes " + err.Error())
@@ -171,7 +172,7 @@ func ReadRequest(r *bufio.Reader) (req *Request, err error) {
 		}
 		req := &Request{}
 		req.Command = arr[0]
-		req.Keys = arr[1:]
+		req.Key = arr[2]
 
 		if len(arr) > 2 && arr[2] == "noreply" {
 			req.Noreply = true
@@ -199,7 +200,7 @@ func ReadRequest(r *bufio.Reader) (req *Request, err error) {
 		req.Command = arr[0]
 		req.Key = arr[1]
 
-		req.Value, err = strconv.ParseInt(arr[2], 10, 64)
+		req.Value, err = strconv.ParseUint(arr[2], 10, 64)
 		if err != nil {
 			return nil, NewError("cannot read value " + err.Error())
 		}

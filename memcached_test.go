@@ -11,8 +11,10 @@ import (
 	"github.com/bradfitz/gomemcache/memcache"
 )
 
-var mockServer *Server
-var addr string
+var (
+	mockServer *Server
+	addr       string
+)
 
 func startMockServer(t *testing.T) {
 	port, err := getFreePort()
@@ -133,16 +135,16 @@ func DefaultDelete(ctx context.Context, req *Request, res *Response) error {
 func DefaultIncr(ctx context.Context, req *Request, res *Response) error {
 	key := req.Key
 	increment := req.Value
-	var base int64
+	var base uint64
 	if value, exists := memStore.Load(key); exists {
 		var err error
-		base, err = strconv.ParseInt(string(value.([]byte)), 10, 64)
+		base, err = strconv.ParseUint(string(value.([]byte)), 10, 64)
 		if err != nil {
 			return err
 		}
 	}
 
-	value := strconv.FormatInt(base+increment, 10)
+	value := strconv.FormatUint(base+increment, 10)
 	memStore.Store(key, []byte(value))
 
 	res.Response = value

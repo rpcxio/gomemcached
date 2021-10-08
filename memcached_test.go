@@ -117,14 +117,8 @@ func DefaultSet(ctx context.Context, req *Request, res *Response) error {
 }
 
 func DefaultDelete(ctx context.Context, req *Request, res *Response) error {
-	count := 0
-	for _, key := range req.Keys {
-		if _, exists := memStore.Load(key); exists {
-			memStore.Delete(key)
-			count++
-		}
-	}
-	if count > 0 {
+	if _, exists := memStore.Load(req.Key); exists {
+		memStore.Delete(req.Key)
 		res.Response = RespDeleted
 	} else {
 		res.Response = RespNotFound

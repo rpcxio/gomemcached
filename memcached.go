@@ -66,7 +66,8 @@ func (s *Server) Start() error {
 	var err error
 
 	if strings.Contains(s.addr, "://") {
-		u, err := url.Parse(s.addr)
+		var u *url.URL
+		u, err = url.Parse(s.addr)
 		if err != nil {
 			return err
 		}

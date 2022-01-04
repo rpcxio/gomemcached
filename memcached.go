@@ -59,9 +59,10 @@ func NewServer(addr string) *Server {
 	}
 }
 
-// Start starts a memcached server in a goroutine.
-// It listens on the TCP network address s.Addr and then calls Serve to handle requests
-// on incoming connections. Accepted connections are configured to enable TCP keep-alives.
+// Start starts the memcached server in a goroutine.
+// It listens on the TCP/unix network address s.Addr and then calls Serve to handle
+// requests on incoming connections. Accepted connections are configured to enable
+// TCP keep-alives when they are TCP network connections.
 func (s *Server) Start() error {
 	var err error
 

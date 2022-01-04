@@ -15,16 +15,21 @@ go get -u github.com/rpcxio/gomemcached
 And register handlers.
 
 ```go
-    addr = "127.0.0.1:" + strconv.Itoa(port)
-	mockServer = NewServer(addr)
-	mockServer.RegisterFunc("get", DefaultGet)
-	mockServer.RegisterFunc("gets", DefaultGet)
-	mockServer.RegisterFunc("set", DefaultSet)
-	mockServer.RegisterFunc("delete", DefaultDelete)
-	mockServer.RegisterFunc("incr", DefaultIncr)
-	mockServer.RegisterFunc("flush_all", DefaultFlushAll)
-	mockServer.RegisterFunc("version", DefaultVersion)
-	mockServer.Start()
+addr := "127.0.0.1:" + strconv.Itoa(port)
+// or use unix domain socket, like:
+// addr := "unix:///tmp/memcached.sock"
+
+mockServer := NewServer(addr)
+
+mockServer.RegisterFunc("get", DefaultGet)
+mockServer.RegisterFunc("gets", DefaultGet)
+mockServer.RegisterFunc("set", DefaultSet)
+mockServer.RegisterFunc("delete", DefaultDelete)
+mockServer.RegisterFunc("incr", DefaultIncr)
+mockServer.RegisterFunc("flush_all", DefaultFlushAll)
+mockServer.RegisterFunc("version", DefaultVersion)
+
+mockServer.Start()
 ```
 
 

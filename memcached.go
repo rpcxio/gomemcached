@@ -6,7 +6,9 @@ import (
 	"fmt"
 	"log"
 	"net"
+	"net/url"
 	"runtime/debug"
+	"strings"
 	"sync"
 	"sync/atomic"
 	"time"
@@ -62,7 +64,23 @@ func NewServer(addr string) *Server {
 // on incoming connections. Accepted connections are configured to enable TCP keep-alives.
 func (s *Server) Start() error {
 	var err error
-	s.ln, err = net.Listen("tcp", s.addr)
+
+	if strings.Contains(s.addr, "://") {
+		u, err := url.Parse(s.addr)
+		if err != nil {
+			return err
+		}
+
+		switch u.Scheme {
+		case "unix":
+			s.ln, err = net.Listen("unix", u.Path)
+		default:
+			s.ln, err = net.Listen("tcp", u.Host)
+		}
+	} else {
+		s.ln, err = net.Listen("tcp", s.addr)
+	}
+
 	if err != nil {
 		return err
 	}
